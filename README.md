@@ -11,7 +11,7 @@ Cash machine
 
 **Add notes:**
 
-**\+ <currency> <value> <number>**
+\+ <currency> <value> <number>
 
 <currency> is 3 uppercase letters, any combination is valid
 
@@ -32,7 +32,7 @@ OK
 
 **Get cash:**
 
-**\- <currency> <amount>**
+\- <currency> <amount>
 
 <currency> as described above, <amount> any positive integer
 
@@ -53,9 +53,9 @@ Example:
 OK
 
 
-**Print cash:
+**Print cash:**
 
-\?**
+\?
 
 Reply: one line for each currency/value pair
 
@@ -66,6 +66,7 @@ followed by the line OK
 Semantics: what is currently in the cash
 
 Example: see in sample session
+
 
 **Sample session (replies are in italics):**
 
