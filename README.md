@@ -19,7 +19,7 @@ Cash machine
 
 \<currency\> is 3 uppercase letters, any combination is valid
 
-\<value\> is the value of notes. Valid values are 10n and 5*10n, 0\<\=n\<\=3 
+\<value\> is the value of notes. Valid values are 10n and 5*10n, 0\<=n\<=3 
 (although some currencies may have larger value notes and some odd values like 2,3,20,25, we do not allow them for simplification).
 
 \<number\> is any positive integer
