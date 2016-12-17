@@ -1,6 +1,7 @@
 # atm-yellow-box
 
 ![Image of atm-yellow-box](https://github.com/AndriiFed/atm-yellow-box/blob/master/atm-yellow-box.jpg)
+
 [![Build Status](https://travis-ci.org/jelementary-finches/atm-yellow-box.svg?branch=master)](https://travis-ci.org/jelementary-finches/atm-yellow-box)
 
 Cash machine
