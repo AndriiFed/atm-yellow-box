@@ -9,6 +9,7 @@ Cash machine
 
 ####Accepted commands:
 
+<br />
 **Add notes**
 
 **\+ \<currency\> \<value\> \<number\>**
