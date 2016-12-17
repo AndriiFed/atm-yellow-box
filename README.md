@@ -5,9 +5,9 @@
 Cash machine
 ===================
 
-#### Implement interface to ATM cash. The device receives commands from standard input and sends replies to standard output.
+### Implement interface to ATM cash. The device receives commands from standard input and sends replies to standard output.
 
-**Accepted commands:**
+####Accepted commands:
 
 **Add notes**
 
@@ -57,7 +57,7 @@ OK
 <br />
 **Print cash**
 
-**\?**
+**?**
 
 Reply: one line for each currency/value pair
 
@@ -117,7 +117,7 @@ Example: see in sample session
 
 *OK*
 
-**\?**
+**?**
 
 *EUR 100 20*
 
