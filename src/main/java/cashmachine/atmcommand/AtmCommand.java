@@ -8,7 +8,9 @@ public abstract class AtmCommand {
   }
 
   public static AtmCommand createCommand(String... args) {
-    if ( ! validateCommand(args)) return null;
+    if ( ! validateCommand(args)) {
+      return null;
+    }
 
     for (String s: args) {
       System.out.println(s);
