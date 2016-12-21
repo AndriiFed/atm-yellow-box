@@ -26,4 +26,10 @@ public class MoneyPack {
   public void setAmount(int amount) {
     this.amount = amount;
   }
+
+  @Override
+  public String toString() {
+    return (String) currency + " " + value + " " + amount;
+  }
+
 }
