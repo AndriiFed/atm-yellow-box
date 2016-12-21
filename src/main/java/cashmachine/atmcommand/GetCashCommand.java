@@ -2,10 +2,13 @@ package cashmachine.atmcommand;
 
 import cashmachine.money.MoneyPack;
 
-public class PutCashCommand extends AtmCommand {
-  MoneyPack moneyPack;
-  public PutCashCommand(MoneyPack moneyPack) {
-    super("putCash");
-    this.moneyPack = moneyPack;
+public class GetCashCommand extends AtmCommand {
+  public final String currency;
+  public final int amount;
+
+  public GetCashCommand(String currency, int amount) {
+    super("getCash");
+    this.currency = currency;
+    this.amount = amount;
   }
 }

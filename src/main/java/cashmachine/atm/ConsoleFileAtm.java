@@ -1,4 +1,9 @@
 package cashmachine.atm;
 
-public class ConsoleFileAtm {
+import cashmachine.atminterface.ConsoleInterface;
+
+public class ConsoleFileAtm extends Atm {
+  public ConsoleFileAtm() {
+    super(new ConsoleInterface());
+  }
 }

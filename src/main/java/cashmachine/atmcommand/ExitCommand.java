@@ -1,7 +1,7 @@
 package cashmachine.atmcommand;
 
-public class PrintCashCommand extends AtmCommand {
-  public PrintCashCommand() {
-    super("printCash");
+public class ExitCommand extends AtmCommand {
+  public ExitCommand() {
+    super("exit");
   }
 }

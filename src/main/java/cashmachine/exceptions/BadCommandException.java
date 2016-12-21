@@ -1,6 +1,6 @@
 package cashmachine.exceptions;
 
-public class CommandValidationException extends Exception {
+public class BadCommandException extends Exception {
   @Override
   public String getMessage() {
     return "Incorrect command";
