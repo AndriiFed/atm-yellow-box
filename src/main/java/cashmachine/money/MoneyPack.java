@@ -1,6 +1,8 @@
 package cashmachine.money;
 
-public class MoneyPack {
+import java.io.Serializable;
+
+public class MoneyPack implements Serializable {
   private String currency;
   private int value;
   private int amount;
