@@ -1,5 +1,4 @@
-import cashmachine.money.MoneyPack;
-import cashmachine.money.MoneyPackSortByValueDesc;
+package cashmachine.money;
 
 import org.junit.Test;
 import org.junit.Before;
