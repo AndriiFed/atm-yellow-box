@@ -7,13 +7,11 @@ import java.util.HashMap;
 
 public class AtmSafeFileByte implements AtmSafe {
 
-  public boolean saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) {
-    return true;
+  public void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) {
+
   }
 
   public HashMap<String, ArrayList<MoneyPack>> loadSafe() {
     return null;
   }
-
-
 }

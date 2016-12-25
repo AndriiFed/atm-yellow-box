@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -20,7 +21,7 @@ public class ATMStorageTest {
   private ATMStorage atmStorage;
 
   @Before
-  public void initialize() {
+  public void initialize() throws Exception {
     mp1 = new MoneyPack("USD", 500, 14);
     mp2 = new MoneyPack("USD", 100, 12);
     mp3 = new MoneyPack("USD", 50, 10);
@@ -43,6 +44,7 @@ public class ATMStorageTest {
 
   @Test
   public void testATMStorageAddMoneyPacks() throws Exception {
+    atmStorage.emptyStorage();
     atmStorage.store(mpe3);
     atmStorage.store(mp1);
     atmStorage.store(mpe4);
@@ -160,6 +162,7 @@ public class ATMStorageTest {
 
   @Test
   public void testATMStorageEmptyStorage() throws Exception {
+    atmStorage.emptyStorage();
     atmStorage.store(mpu1);
     atmStorage.store(mpu2);
     atmStorage.store(mpu3);

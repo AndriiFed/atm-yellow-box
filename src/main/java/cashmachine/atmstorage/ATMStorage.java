@@ -1,8 +1,10 @@
 package cashmachine.atmstorage;
 
+import cashmachine.atmstorage.AtmStorageProperties;
 import cashmachine.money.MoneyPack;
 import cashmachine.money.MoneyPackSortByValueDesc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,11 +12,26 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ATMStorage {
-  private AtmSafe atmSafe = new AtmSafeFileByte();
-  private HashMap<String, ArrayList<MoneyPack>> moneyStorage = new HashMap<>(); // = atmSafe.loadSafe();
 
-  public void store(MoneyPack moneyPack) {
+
+public class ATMStorage {
+  private AtmSafe atmSafe = new AtmSafeFileObject();
+  private HashMap<String, ArrayList<MoneyPack>> moneyStorage = atmSafe.loadSafe();
+
+  public ATMStorage() throws Exception {
+    switch (AtmStorageProperties.getStorageType()) {
+      case "object": atmSafe = new AtmSafeFileObject();
+        break;
+      case "bytes": atmSafe = new AtmSafeFileByte();
+        break;
+      //case "jackson": atmSafe = new AtmSafeJackson();
+        //break;
+      default: atmSafe = new AtmSafeFileObject();
+        break;
+    }
+  }
+
+  public void store(MoneyPack moneyPack) throws IOException {
 
     moneyPack = new MoneyPack(moneyPack.getCurrency(), moneyPack.getValue(), moneyPack.getAmount());
 
@@ -44,9 +61,11 @@ public class ATMStorage {
       tempArrayList.add(moneyPack);
       moneyStorage.put(moneyPack.getCurrency(), tempArrayList);
     }
+
+    atmSafe.saveSafe(moneyStorage);
   }
 
-  public List<MoneyPack> take(String currency, int money) {
+  public List<MoneyPack> take(String currency, int money) throws IOException {
 
     ArrayList<MoneyPack> moneyList = new ArrayList<>();
 
@@ -79,6 +98,7 @@ public class ATMStorage {
     }
     if (summ == money) {
       takeFromStorage(moneyList);
+      atmSafe.saveSafe(moneyStorage);
       return moneyList;
     }
     return new ArrayList<>();
@@ -137,13 +157,15 @@ public class ATMStorage {
     return summ;
   }
 
-  public void emptyStorage() {
+  public void emptyStorage() throws IOException {
     moneyStorage.clear();
+    atmSafe.saveSafe(moneyStorage);
   }
 
-  public void emptyStorage(String currency) {
+  public void emptyStorage(String currency) throws IOException {
     if (moneyStorage.containsKey(currency)) {
       moneyStorage.remove(currency);
+      atmSafe.saveSafe(moneyStorage);
     }
   }
 
