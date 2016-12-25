@@ -5,7 +5,9 @@ import cashmachine.money.MoneyPackSortByValueDesc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 public class ATMStorage {
@@ -44,18 +46,105 @@ public class ATMStorage {
     }
   }
 
-  public List<MoneyPack> take() {
-    return null;
+  public List<MoneyPack> take(String currency, int money) {
+
+    ArrayList<MoneyPack> moneyList = new ArrayList<>();
+
+    if (!moneyStorage.containsKey(currency)) {
+      return new ArrayList<>();
+    }
+
+    if (getAmount(currency) < money) {
+      return new ArrayList<>();
+    }
+
+    int summ = 0;
+    int buffer = money;
+    for (int i = 0; i < moneyStorage.get(currency).size(); i++) {
+      if (moneyStorage.get(currency).get(i).getValue() > buffer) {
+        continue;
+      }
+      if (buffer / moneyStorage.get(currency).get(i).getValue() > moneyStorage.get(currency).get(i).getAmount()) {
+        summ += moneyStorage.get(currency).get(i).getAmount() * moneyStorage.get(currency).get(i).getValue();
+        moneyList.add(new MoneyPack(currency, moneyStorage.get(currency).get(i).getValue(),
+            moneyStorage.get(currency).get(i).getAmount()));
+        buffer = money - summ;
+        continue;
+      }
+
+      summ += (buffer / moneyStorage.get(currency).get(i).getValue()) * moneyStorage.get(currency).get(i).getValue();
+      moneyList.add(new MoneyPack(currency, moneyStorage.get(currency).get(i).getValue(),
+          buffer / moneyStorage.get(currency).get(i).getValue()));
+      buffer = money - summ;
+    }
+    if (summ == money) {
+      takeFromStorage(moneyList);
+      return moneyList;
+    }
+    return new ArrayList<>();
   }
 
-  public void showContent() {
-    for (ArrayList<MoneyPack> mplist : moneyStorage.values()) {
-      System.out.println(mplist);
+  private void takeFromStorage(ArrayList<MoneyPack> moneyList) {
+    for (MoneyPack mp : moneyList) {
+      for (int i = 0; i < moneyStorage.get(mp.getCurrency()).size(); i++) {
+        if (moneyStorage.get(mp.getCurrency()).get(i).getValue() == mp.getValue()) {
+          moneyStorage.get(mp.getCurrency()).get(i).setAmount(moneyStorage.get(mp.getCurrency()).get(i).getAmount()
+              - mp.getAmount());
+          if (moneyStorage.get(mp.getCurrency()).get(i).getAmount() == 0) {
+            moneyStorage.get(mp.getCurrency()).remove(i);
+          }
+        }
+      }
     }
+    flushMoneyStorage();
+  }
+
+  private void flushMoneyStorage() {
+    Iterator<Map.Entry<String, ArrayList<MoneyPack>>> it = moneyStorage.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, ArrayList<MoneyPack>> entry = it.next();
+      String key = entry.getKey();
+      ArrayList<MoneyPack> value = entry.getValue();
+      if (value.isEmpty()) {
+        it.remove();
+      }
+    }
+  }
+
+  public List<MoneyPack> showContent() {
+    ArrayList<MoneyPack> wholeList = new ArrayList<>();
+    for (ArrayList<MoneyPack> mplist : moneyStorage.values()) {
+      for (MoneyPack mp : mplist) {
+        wholeList.add(mp);
+      }
+    }
+    return wholeList;
   }
 
   public HashMap<String, ArrayList<MoneyPack>> getMoneyStorage() {
     return moneyStorage;
+  }
+
+  public int getAmount(String currency) {
+    if (!moneyStorage.containsKey(currency)) {
+      return 0;
+    }
+
+    int summ = 0;
+    for (int i = 0; i < moneyStorage.get(currency).size(); i++) {
+      summ +=  moneyStorage.get(currency).get(i).getValue() * moneyStorage.get(currency).get(i).getAmount();
+    }
+    return summ;
+  }
+
+  public void emptyStorage() {
+    moneyStorage.clear();
+  }
+
+  public void emptyStorage(String currency) {
+    if (moneyStorage.containsKey(currency)) {
+      moneyStorage.remove(currency);
+    }
   }
 
 }
