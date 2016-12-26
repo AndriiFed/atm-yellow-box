@@ -2,12 +2,13 @@ package cashmachine.atmstorage;
 
 import cashmachine.money.MoneyPack;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface AtmSafe {
 
-  boolean saveSafe(HashMap<String, ArrayList<MoneyPack>> safe);
+  void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) throws IOException;
 
-  HashMap<String, ArrayList<MoneyPack>> loadSafe();
+  HashMap<String, ArrayList<MoneyPack>> loadSafe() throws IOException;
 }
