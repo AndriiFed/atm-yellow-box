@@ -1,6 +1,5 @@
 package cashmachine.atmstorage;
 
-import cashmachine.atmstorage.AtmStorageProperties;
 import cashmachine.money.MoneyPack;
 import cashmachine.money.MoneyPackSortByValueDesc;
 
@@ -16,20 +15,26 @@ import java.util.Map;
 
 public class ATMStorage {
   private AtmSafe atmSafe = new AtmSafeFileObject();
-  private HashMap<String, ArrayList<MoneyPack>> moneyStorage = atmSafe.loadSafe();
+  private HashMap<String, ArrayList<MoneyPack>> moneyStorage;
 
   public ATMStorage() throws Exception {
-    switch (AtmStorageProperties.getStorageType()) {
+    this(AtmStorageProperties.getStorageType());
+  }
+
+  public ATMStorage(String storageType) throws Exception {
+    switch (storageType) {
       case "object": atmSafe = new AtmSafeFileObject();
         break;
       case "bytes": atmSafe = new AtmSafeFileByte();
         break;
-      //case "jackson": atmSafe = new AtmSafeJackson();
-        //break;
+      case "json": atmSafe = new AtmSafeFileJackson();
+        break;
       default: atmSafe = new AtmSafeFileObject();
         break;
     }
+    moneyStorage = atmSafe.loadSafe();
   }
+
 
   public void store(MoneyPack moneyPack) throws IOException {
 

@@ -7,10 +7,24 @@ public class MoneyPack implements Serializable {
   private int value;
   private int amount;
 
+  public MoneyPack() {
+    this.currency = "AAA";
+    this.value = 0;
+    this.amount = 0;
+  }
+
   public MoneyPack(String currency, int value, int amount) {
     this.currency = currency;
     this.value = value;
     this.amount = amount;
+  }
+
+  public void setCurrency(String currency) {
+    this.currency = currency;
+  }
+
+  public void setValue(int value) {
+    this.value = value;
   }
 
   public String getCurrency() {
