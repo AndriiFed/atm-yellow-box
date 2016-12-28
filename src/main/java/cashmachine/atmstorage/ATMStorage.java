@@ -1,6 +1,5 @@
 package cashmachine.atmstorage;
 
-import cashmachine.atmstorage.AtmStorageProperties;
 import cashmachine.money.MoneyPack;
 import cashmachine.money.MoneyPackSortByValueDesc;
 
@@ -11,25 +10,32 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 public class ATMStorage {
   private AtmSafe atmSafe = new AtmSafeFileObject();
-  private HashMap<String, ArrayList<MoneyPack>> moneyStorage = atmSafe.loadSafe();
+  private HashMap<String, ArrayList<MoneyPack>> moneyStorage;
+  private AtmStorageProperties properties;
 
   public ATMStorage() throws Exception {
-    switch (AtmStorageProperties.getStorageType()) {
-      case "object": atmSafe = new AtmSafeFileObject();
+    this("");
+  }
+
+  public ATMStorage(String environment) throws Exception {
+
+    properties = new AtmStorageProperties(environment);
+
+    switch (properties.getProperty("storageType")) {
+      case "object": atmSafe = new AtmSafeFileObject(properties.getProperty("objectFileName"));
         break;
-      case "bytes": atmSafe = new AtmSafeFileByte();
+      case "xml": atmSafe = new AtmSafeFileJacksonXML(properties.getProperty("xmlFileName"));
         break;
-      //case "jackson": atmSafe = new AtmSafeJackson();
-        //break;
+      case "json": atmSafe = new AtmSafeFileJackson(properties.getProperty("jsonFileName"));
+        break;
       default: atmSafe = new AtmSafeFileObject();
         break;
     }
+    moneyStorage = atmSafe.loadSafe();
   }
+
 
   public void store(MoneyPack moneyPack) throws IOException {
 

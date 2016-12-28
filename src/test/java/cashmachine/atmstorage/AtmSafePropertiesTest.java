@@ -1,7 +1,5 @@
 package cashmachine.atmstorage;
 
-import cashmachine.money.MoneyPack;
-
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,9 +12,13 @@ public class AtmSafePropertiesTest {
 
   @Test
   public void testAtmSafeProperties() throws Exception {
-    AtmStorageProperties.setStorageType("object");
 
-    assertThat(AtmStorageProperties.getStorageType(), is("object"));
+    AtmStorageProperties properties = new AtmStorageProperties("test");
+    AtmStorageProperties properties2 = new AtmStorageProperties();
+
+    assertThat(properties.getProperty("storageType"),  anyOf(containsString("object"), containsString("xml"), containsString("json"), containsString("h2")));
+    assertThat(properties2.getProperty("storageType"),  anyOf(containsString("object"), containsString("xml"), containsString("json"), containsString("h2")));
+
   }
 
 }

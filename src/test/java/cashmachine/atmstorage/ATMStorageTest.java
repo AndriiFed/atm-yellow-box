@@ -4,9 +4,10 @@ import cashmachine.money.MoneyPack;
 
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Ignore;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -39,7 +40,15 @@ public class ATMStorageTest {
     mpu5 = new MoneyPack("UAH", 1, 1);
 
 
-    atmStorage = new ATMStorage();
+    atmStorage = new ATMStorage("test");
+  }
+
+  @After
+  public void destructor() throws Exception {
+    File file = new File("safe-test.ser");
+    if(file.exists()) {
+      file.delete();
+    }
   }
 
   @Test

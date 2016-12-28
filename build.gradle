@@ -1,28 +1,48 @@
 apply plugin: 'java'
 apply plugin: 'checkstyle'
 
-  repositories {
-      jcenter()
-  }
+jar.baseName = 'atm-yellow-box'
+version = '1.0'
 
-  dependencies {
-      testCompile 'junit:junit:4.12'
-      testCompile 'org.hamcrest:hamcrest-all:1.3'
-      //testCompile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'ATM yellow box',
+            'Implementation-Version': version,
+            'Created-By': 'aa-team'
+            //, 'Main-Class': 'Main'
   }
+}
 
-  checkstyle {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    checkstyleTest.enabled = false
-    toolVersion = '7.1.2'
-  }
+repositories {
+  jcenter()
+}
 
-  task execute(type:JavaExec) {
-    if (project.hasProperty('mainClass')) {
-      main = mainClass
-    } else {
-      main = 'Main'
-    }
-    standardInput = System.in
-    classpath = sourceSets.main.runtimeClasspath
+dependencies {
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.hamcrest:hamcrest-all:1.3'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+  compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
+  compile 'com.h2database:h2:1.4.193'
+
+}
+
+checkstyle {
+  configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+  checkstyleTest.enabled = false
+  toolVersion = '7.1.2'
+}
+
+task execute(type:JavaExec) {
+  if (project.hasProperty('mainClass')) {
+    main = mainClass
+  } else {
+    main = 'Main'
   }
+  standardInput = System.in
+  classpath = sourceSets.main.runtimeClasspath
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
