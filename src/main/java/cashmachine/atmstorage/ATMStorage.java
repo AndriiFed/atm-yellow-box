@@ -10,24 +10,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 public class ATMStorage {
   private AtmSafe atmSafe = new AtmSafeFileObject();
   private HashMap<String, ArrayList<MoneyPack>> moneyStorage;
+  private AtmStorageProperties properties;
 
   public ATMStorage() throws Exception {
-    this(AtmStorageProperties.getStorageType());
+    this("");
   }
 
-  public ATMStorage(String storageType) throws Exception {
-    switch (storageType) {
-      case "object": atmSafe = new AtmSafeFileObject();
+  public ATMStorage(String environment) throws Exception {
+
+    properties = new AtmStorageProperties(environment);
+
+    switch (properties.getProperty("storageType")) {
+      case "object": atmSafe = new AtmSafeFileObject(properties.getProperty("objectFileName"));
         break;
-      case "bytes": atmSafe = new AtmSafeFileByte();
+      case "xml": atmSafe = new AtmSafeFileJacksonXML(properties.getProperty("xmlFileName"));
         break;
-      case "json": atmSafe = new AtmSafeFileJackson();
+      case "json": atmSafe = new AtmSafeFileJackson(properties.getProperty("jsonFileName"));
         break;
       default: atmSafe = new AtmSafeFileObject();
         break;

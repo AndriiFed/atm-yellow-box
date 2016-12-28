@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Ignore;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,12 +40,12 @@ public class ATMStorageTest {
     mpu5 = new MoneyPack("UAH", 1, 1);
 
 
-    atmStorage = new ATMStorage();
+    atmStorage = new ATMStorage("test");
   }
 
   @After
-  public void destrustor() throws Exception {
-    File file = new File("safe.ser");
+  public void destructor() throws Exception {
+    File file = new File("safe-test.ser");
     if(file.exists()) {
       file.delete();
     }

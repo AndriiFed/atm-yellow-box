@@ -21,6 +21,7 @@ dependencies {
   testCompile 'junit:junit:4.12'
   testCompile 'org.hamcrest:hamcrest-all:1.3'
   compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+  compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
   compile 'com.h2database:h2:1.4.193'
 
 }
@@ -40,16 +41,7 @@ task execute(type:JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 }
 
-sourceSets {
-  main {
-    resources {
-      srcDir "resources"
-    }
-  }
-  test {
-    resources {
-      srcDir "resources"
-    }
-  }
+compileJava {
+  options.compilerArgs << '-Xlint:unchecked'
 }
 

@@ -39,17 +39,17 @@ public class AtmSafeFileObjectTest {
     mpu4 = new MoneyPack("UAH", 10, 1);
     mpu5 = new MoneyPack("UAH", 1, 1);
 
-    atmStorage = new ATMStorage("object");
+    atmStorage = new ATMStorage("test");
 
   }
 
-  @After
-  public void destrustor() throws Exception {
-    File file = new File("safe.ser");
+/*  @After
+  public void destructor() throws Exception {
+    File file = new File("safe-test.ser");
     if(file.exists()) {
       file.delete();
     }
-  }
+  }*/
 
   @Test
   public void testAtmSafeObjectFile1() throws IOException {
@@ -81,7 +81,7 @@ public class AtmSafeFileObjectTest {
 
     testAtmSafeObjectFile1();
 
-    atmStorage = new ATMStorage();
+    atmStorage = new ATMStorage("test");
 
     assertThat(atmStorage.getMoneyStorage().isEmpty(), is(false));
     // USD

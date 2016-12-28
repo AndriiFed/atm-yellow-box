@@ -38,21 +38,21 @@ public class AtmSafeFileJacksonTest {
     mpu4 = new MoneyPack("UAH", 10, 1);
     mpu5 = new MoneyPack("UAH", 1, 1);
 
-    atmStorage = new ATMStorage("json");
+    atmStorage = new ATMStorage("test");
   }
-
+/*
   @After
-  public void destrustor() throws Exception {
-    File file = new File("safe.json");
+  public void destructor() throws Exception {
+    File file = new File("safe-test.json");
     if(file.exists()) {
       file.delete();
     }
-  }
+  }*/
 
   @Test
   public void testAtmSafe_JSON_File_Test0() throws Exception {
 
-    System.out.println(atmStorage.showContent());
+    //System.out.println(atmStorage.showContent());
 
   }
 
@@ -68,19 +68,19 @@ public class AtmSafeFileJacksonTest {
     atmStorage.store(mp4);
     atmStorage.store(mpe1);
 
-    AtmSafeFileJackson jsonFile = new AtmSafeFileJackson();
+    AtmSafeFileJackson jsonFile = new AtmSafeFileJackson("safe-test.json");
     jsonFile.saveSafe(atmStorage.getMoneyStorage());
-    File file = new File("safe.json");
+    File file = new File("safe-test.json");
 
     assertThat(file.exists(), is(true));
+
   }
 
   @Test
   public void testAtmSafe_JSON_File_Test2() throws Exception {
-
     testAtmSafe_JSON_File_Test1();
 
-    atmStorage = new ATMStorage("json");
+    atmStorage = new ATMStorage("test");
 
     assertThat(atmStorage.getMoneyStorage().isEmpty(), is(false));
     // USD

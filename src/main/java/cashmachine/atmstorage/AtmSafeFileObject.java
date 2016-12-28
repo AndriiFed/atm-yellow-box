@@ -15,13 +15,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AtmSafeFileObject implements AtmSafe {
+  private String filename = "safe.ser";
+
+  public AtmSafeFileObject() {
+
+  }
+
+  public AtmSafeFileObject(String filename) {
+    this.filename = filename;
+  }
 
   public void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) throws IOException {
 
-    try (ObjectOutput out = new ObjectOutputStream(new FileOutputStream("safe.ser"))) {
+    try (ObjectOutput out = new ObjectOutputStream(new FileOutputStream(filename))) {
       out.writeObject(safe);
     } catch (IOException exception) {
-      System.out.println("Error open safe.ser file");
+      System.out.println("Error open file: " + filename + " " + exception);
     }
   }
 
@@ -29,15 +38,15 @@ public class AtmSafeFileObject implements AtmSafe {
   public HashMap<String, ArrayList<MoneyPack>> loadSafe() throws IOException {
     HashMap<String, ArrayList<MoneyPack>> moneyStorage = new HashMap<>();
 
-    File file = new File("safe.ser");
+    File file = new File(filename);
     if (!file.exists()) {
       saveSafe(moneyStorage);
     }
 
-    try (ObjectInput in = new ObjectInputStream(new FileInputStream("safe.ser"))) {
+    try (ObjectInput in = new ObjectInputStream(new FileInputStream(filename))) {
       moneyStorage = (HashMap<String, ArrayList<MoneyPack>>) in.readObject();
     } catch (IOException exception) {
-      System.out.println("Error open safe.ser file.");
+      System.out.println("Error open file: " + filename + " " + exception);
     } catch (ClassNotFoundException exception) {
       exception.printStackTrace();
     }

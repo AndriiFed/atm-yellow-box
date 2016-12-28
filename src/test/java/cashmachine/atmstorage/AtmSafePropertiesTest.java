@@ -13,7 +13,12 @@ public class AtmSafePropertiesTest {
   @Test
   public void testAtmSafeProperties() throws Exception {
 
-    assertThat(AtmStorageProperties.getStorageType(), is("object"));
+    AtmStorageProperties properties = new AtmStorageProperties("test");
+    AtmStorageProperties properties2 = new AtmStorageProperties();
+
+    assertThat(properties.getProperty("storageType"),  anyOf(containsString("object"), containsString("xml"), containsString("json"), containsString("h2")));
+    assertThat(properties2.getProperty("storageType"),  anyOf(containsString("object"), containsString("xml"), containsString("json"), containsString("h2")));
+
   }
 
 }
