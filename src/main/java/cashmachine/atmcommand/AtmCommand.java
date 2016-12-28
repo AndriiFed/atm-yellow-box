@@ -1,32 +1,35 @@
 package cashmachine.atmcommand;
 
+import cashmachine.atm.Atm;
 import cashmachine.exceptions.BadCommandException;
 import cashmachine.money.MoneyPack;
 
 public abstract class AtmCommand {
-  public final String atmMethod;
+  public final Atm atm;
 
-  protected AtmCommand(String method) {
-    atmMethod = method;
+  protected AtmCommand(Atm atm) {
+    this.atm = atm;
   }
 
-  public static AtmCommand createCommand(String[] args) throws BadCommandException {
+  public abstract void execute() throws Exception;
+
+  public static AtmCommand createCommand(Atm atm, String[] args) throws BadCommandException {
     if ( ! validateCommand(args)) {
       throw new BadCommandException();
     }
 
     switch (args[0]) {
       case "+":
-        MoneyPack pack = new MoneyPack(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-        return new PutCashCommand(pack);
+        MoneyPack pack = new MoneyPack(args[1].toUpperCase(), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        return new PutCashCommand(atm, pack);
       case "-":
-        String currency = args[1];
+        String currency = args[1].toUpperCase();
         int amount = Integer.parseInt(args[2]);
-        return new GetCashCommand(currency, amount);
+        return new GetCashCommand(atm, currency, amount);
       case "?":
-        return new PrintCashCommand();
+        return new PrintCashCommand(atm);
       case "exit":
-        return new ExitCommand();
+        return new ExitCommand(atm);
       default:
         throw new BadCommandException();
     }

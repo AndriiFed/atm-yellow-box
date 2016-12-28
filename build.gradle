@@ -23,5 +23,6 @@ apply plugin: 'checkstyle'
     } else {
       main = 'Main'
     }
+    standardInput = System.in
     classpath = sourceSets.main.runtimeClasspath
   }
