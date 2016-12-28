@@ -38,6 +38,7 @@ task execute(type:JavaExec) {
   } else {
     main = 'Main'
   }
+  standardInput = System.in
   classpath = sourceSets.main.runtimeClasspath
 }
 
