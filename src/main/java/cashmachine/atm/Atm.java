@@ -5,60 +5,56 @@ import cashmachine.atmcommand.GetCashCommand;
 import cashmachine.atmcommand.PutCashCommand;
 import cashmachine.atminterface.AtmInterface;
 import cashmachine.atminterface.ConsoleInterface;
+import cashmachine.atmstorage.ATMStorage;
 import cashmachine.exceptions.BadCommandException;
+import cashmachine.money.MoneyPack;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public abstract class Atm {
   AtmInterface atmInterface;
+  ATMStorage atmStorage;
   AtmCommand command;
   private boolean workingState;
 
-  public Atm(AtmInterface atmInterface) {
+  public Atm(AtmInterface atmInterface, ATMStorage atmStorage) {
     this.atmInterface = atmInterface;
+    this.atmStorage = atmStorage;
     workingState = true;
   }
 
   public void start() {
+    atmInterface.showGreeting();
     while (workingState) {
       try {
-        command = atmInterface.receiveCommand();
-        Method method = this.getClass().getMethod(command.atmMethod);
-        method.invoke(this);
+        command = atmInterface.receiveCommand(this);
+        command.execute();
       } catch (BadCommandException exception) {
-        atmInterface.showMessage(ConsoleInterface.errorMessage + ": " + exception.getMessage());
+        atmInterface.showError(exception.getMessage());
       } catch (Exception exception) {
-        atmInterface.showMessage(ConsoleInterface.errorMessage);
+        atmInterface.showError();
       }
       command = null;
     }
   }
 
-  public void getCash() throws BadCommandException {
-    if (command == null) {
-      throw new BadCommandException();
-    }
-    GetCashCommand getCashCommand = (GetCashCommand) command;
-    System.out.println("get " + getCashCommand.currency + " " + getCashCommand.amount);
+  public void getCash(String currency, int amount) throws Exception {
+    List<MoneyPack> money = atmStorage.take(currency, amount);
+    atmInterface.giveMoney(money);
   }
 
-  public void putCash() throws BadCommandException {
-    if (command == null) {
-      throw new BadCommandException();
-    }
-    PutCashCommand putCashCommand = (PutCashCommand) command;
-    System.out.println("put " + putCashCommand.moneyPack);
+  public void putCash(MoneyPack moneyPack) throws Exception {
+    atmStorage.store(moneyPack);
   }
 
-  public void printCash() throws BadCommandException {
-    if (command == null) {
-      throw new BadCommandException();
-    }
-    System.out.println("print cash");
+  public void printCash() throws Exception {
+    List<MoneyPack> money = atmStorage.showContent();
+    atmInterface.showBalance(money);
   }
 
-  public void exit() {
+  public void exit() throws Exception {
     workingState = false;
   }
 }
