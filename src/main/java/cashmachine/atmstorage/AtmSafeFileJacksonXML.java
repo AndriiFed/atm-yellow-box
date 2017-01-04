@@ -32,8 +32,8 @@ public class AtmSafeFileJacksonXML implements AtmSafe {
     xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     ArrayList<MoneyPack> wholeList = new ArrayList<>();
     if (!safe.isEmpty()) {
-      for (ArrayList<MoneyPack> mplist : safe.values()) {
-        for (MoneyPack mp : mplist) {
+      for (ArrayList<MoneyPack> mpList : safe.values()) {
+        for (MoneyPack mp : mpList) {
           wholeList.add(mp);
         }
       }
