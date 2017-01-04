@@ -36,6 +36,8 @@ public class ATMStorage {
         break;
       case "json": atmSafe = new AtmSafeFileJackson(properties.getProperty("jsonFileName"));
         break;
+      case "h2db": atmSafe = new AtmSafeH2Db(properties.getProperty("h2_db.uri"));
+        break;
       case "memory": atmSafe = new AtmSafeFileMemory();
         break;
       default: atmSafe = new AtmSafeFileMemory();
@@ -45,7 +47,7 @@ public class ATMStorage {
   }
 
 
-  public void store(MoneyPack moneyPack) throws IOException {
+  public void store(MoneyPack moneyPack) throws Exception {
 
     moneyPack = new MoneyPack(moneyPack.getCurrency(), moneyPack.getValue(), moneyPack.getAmount());
 
@@ -80,7 +82,7 @@ public class ATMStorage {
   }
 
   @SuppressWarnings("unchecked")
-  public List<MoneyPack> take(String currency, int money) throws IOException {
+  public List<MoneyPack> take(String currency, int money) throws Exception {
     ArrayList<MoneyPack> moneyList = new ArrayList<>();
 
     if (!moneyStorage.containsKey(currency)) {
@@ -170,12 +172,12 @@ public class ATMStorage {
     return summ;
   }
 
-  public void emptyStorage() throws IOException {
+  public void emptyStorage() throws Exception {
     moneyStorage.clear();
     atmSafe.saveSafe(moneyStorage);
   }
 
-  public void emptyStorage(String currency) throws IOException {
+  public void emptyStorage(String currency) throws Exception {
     if (moneyStorage.containsKey(currency)) {
       moneyStorage.remove(currency);
       atmSafe.saveSafe(moneyStorage);
