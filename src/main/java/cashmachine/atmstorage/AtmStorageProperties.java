@@ -28,19 +28,19 @@ public class AtmStorageProperties {
 
   private void createDefaultProperties() throws Exception {
     Properties properties = new Properties();
+    String commentText = "ATM properties file.\n#storageType : memory, object, json, xml, h2db.";
+    properties.setProperty("storageType", "memory");
+    properties.setProperty("objectFileName", "atm.ser");
+    properties.setProperty("jsonFileName", "atm.json");
+    properties.setProperty("xmlFileName", "atm.xml");
+    properties.setProperty("h2_db.uri", "h2");
+    properties.setProperty("h2_db.username", "su");
+    properties.setProperty("h2_db.password", "su");
 
-    try {
-      properties.setProperty("storageType", "object");
-      properties.setProperty("objectFileName", "atm.ser");
-      properties.setProperty("jsonFileName", "atm.json");
-      properties.setProperty("xmlFileName", "atm.xml");
-      properties.setProperty("h2_db.uri", "h2");
-      properties.setProperty("h2_db.username", "su");
-      properties.setProperty("h2_db.password", "su");
-
-      properties.store(new FileOutputStream(propFileName), "ATM properties file.");
+    try (FileOutputStream outputStream = new FileOutputStream(propFileName))  {
+      properties.store(outputStream, commentText);
     } catch (IOException exception) {
-      System.out.println("Error open atm.properties file. " + exception);
+      System.out.println("Error open properties file: " + propFileName + " " + exception);
     }
   }
 

@@ -9,6 +9,8 @@ import org.junit.Ignore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -40,33 +42,23 @@ public class AtmSafeFileJacksonTest {
 
     atmStorage = new ATMStorage("test");
   }
-/*
+
   @After
   public void destructor() throws Exception {
     File file = new File("safe-test.json");
     if(file.exists()) {
       file.delete();
     }
-  }*/
-
-  @Test
-  public void testAtmSafe_JSON_File_Test0() throws Exception {
-
-    //System.out.println(atmStorage.showContent());
-
   }
 
   @Test
-  public void testAtmSafe_JSON_File_Test1() throws IOException {
+  public void testAtmSafe_JSON_File_Test1() throws Exception {
     atmStorage.emptyStorage();
-    atmStorage.store(mpe3);
     atmStorage.store(mp1);
-    atmStorage.store(mpe4);
     atmStorage.store(mp2);
     atmStorage.store(mp3);
-    atmStorage.store(mpe2);
     atmStorage.store(mp4);
-    atmStorage.store(mpe1);
+    atmStorage.store(mpu1);
 
     AtmSafeFileJackson jsonFile = new AtmSafeFileJackson("safe-test.json");
     jsonFile.saveSafe(atmStorage.getMoneyStorage());
@@ -74,25 +66,20 @@ public class AtmSafeFileJacksonTest {
 
     assertThat(file.exists(), is(true));
 
-  }
+    HashMap<String, ArrayList<MoneyPack>> safe = jsonFile.loadSafe();
 
-  @Test
-  public void testAtmSafe_JSON_File_Test2() throws Exception {
-    testAtmSafe_JSON_File_Test1();
-
-    atmStorage = new ATMStorage("test");
-
-    assertThat(atmStorage.getMoneyStorage().isEmpty(), is(false));
+    assertThat(safe.isEmpty(), is(false));
     // USD
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(0).getAmount(), is(14));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(1).getAmount(), is(12));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(2).getAmount(), is(10));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(3).getAmount(), is(8));
+    assertThat(safe.get("USD").get(0).getAmount(), is(14));
+    assertThat(safe.get("USD").get(1).getAmount(), is(12));
+    assertThat(safe.get("USD").get(2).getAmount(), is(10));
+    assertThat(safe.get("USD").get(3).getAmount(), is(8));
     // EUR
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(0).getAmount(), is(34));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(1).getAmount(), is(32));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(2).getAmount(), is(30));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(3).getAmount(), is(28));
+    /*assertThat(safe.get("EUR").get(0).getAmount(), is(34));
+    assertThat(safe.get("EUR").get(1).getAmount(), is(32));
+    assertThat(safe.get("EUR").get(2).getAmount(), is(30));
+    assertThat(safe.get("EUR").get(3).getAmount(), is(28));*/
   }
+
 
 }

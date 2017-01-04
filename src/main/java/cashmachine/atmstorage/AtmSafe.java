@@ -10,5 +10,5 @@ public interface AtmSafe {
 
   void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) throws IOException;
 
-  HashMap<String, ArrayList<MoneyPack>> loadSafe() throws IOException;
+  HashMap<String, ArrayList<MoneyPack>> loadSafe() throws Exception;
 }

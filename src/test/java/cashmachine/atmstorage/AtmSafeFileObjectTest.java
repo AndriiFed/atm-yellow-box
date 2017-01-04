@@ -9,6 +9,8 @@ import org.junit.Ignore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -43,59 +45,45 @@ public class AtmSafeFileObjectTest {
 
   }
 
-/*  @After
+/*
+  @After
   public void destructor() throws Exception {
     File file = new File("safe-test.ser");
     if(file.exists()) {
       file.delete();
     }
-  }*/
+  }
+*/
 
   @Test
-  public void testAtmSafeObjectFile1() throws IOException {
+  public void testAtmSafe_Object_File_Test1() throws Exception {
     atmStorage.emptyStorage();
-    atmStorage.store(mpe3);
     atmStorage.store(mp1);
-    atmStorage.store(mpe4);
     atmStorage.store(mp2);
     atmStorage.store(mp3);
-    atmStorage.store(mpe2);
     atmStorage.store(mp4);
-    atmStorage.store(mpe1);
+    atmStorage.store(mpu1);
 
+    AtmSafe fileSafe = new AtmSafeFileObject("safe-test.ser");
+    fileSafe.saveSafe(atmStorage.getMoneyStorage());
+    File file = new File("safe-test.ser");
+
+    assertThat(file.exists(), is(true));
+
+    HashMap<String, ArrayList<MoneyPack>> safe = fileSafe.loadSafe();
+
+    assertThat(safe.isEmpty(), is(false));
     // USD
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(0).getAmount(), is(14));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(1).getAmount(), is(12));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(2).getAmount(), is(10));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(3).getAmount(), is(8));
+    assertThat(safe.get("USD").get(0).getAmount(), is(14));
+    assertThat(safe.get("USD").get(1).getAmount(), is(12));
+    assertThat(safe.get("USD").get(2).getAmount(), is(10));
+    assertThat(safe.get("USD").get(3).getAmount(), is(8));
     // EUR
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(0).getAmount(), is(34));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(1).getAmount(), is(32));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(2).getAmount(), is(30));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(3).getAmount(), is(28));
-
+    /*assertThat(safe.get("EUR").get(0).getAmount(), is(34));
+    assertThat(safe.get("EUR").get(1).getAmount(), is(32));
+    assertThat(safe.get("EUR").get(2).getAmount(), is(30));
+    assertThat(safe.get("EUR").get(3).getAmount(), is(28));*/
   }
 
-  @Test
-  public void testAtmSafeObjectFile2() throws Exception {
-
-    testAtmSafeObjectFile1();
-
-    atmStorage = new ATMStorage("test");
-
-    assertThat(atmStorage.getMoneyStorage().isEmpty(), is(false));
-    // USD
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(0).getAmount(), is(14));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(1).getAmount(), is(12));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(2).getAmount(), is(10));
-    assertThat(atmStorage.getMoneyStorage().get("USD").get(3).getAmount(), is(8));
-    // EUR
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(0).getAmount(), is(34));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(1).getAmount(), is(32));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(2).getAmount(), is(30));
-    assertThat(atmStorage.getMoneyStorage().get("EUR").get(3).getAmount(), is(28));
-
-
-  }
 
 }

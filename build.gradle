@@ -4,15 +4,6 @@ apply plugin: 'checkstyle'
 jar.baseName = 'atm-yellow-box'
 version = '1.0'
 
-jar {
-  manifest {
-    attributes 'Implementation-Title': 'ATM yellow box',
-            'Implementation-Version': version,
-            'Created-By': 'aa-team'
-            //, 'Main-Class': 'Main'
-  }
-}
-
 repositories {
   jcenter()
 }
@@ -32,6 +23,38 @@ checkstyle {
   toolVersion = '7.1.2'
 }
 
+compileJava {
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'ATM yellow box',
+            'Implementation-Version': version,
+            'Created-By': 'aa-team',
+            'Main-Class': 'Main'
+  }
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+  manifest {
+    attributes 'Implementation-Title': 'ATM yellow box',
+            'Implementation-Version': version,
+            'Created-By': 'aa-team',
+            'Main-Class': 'Main'
+  }
+    baseName = 'atm-yellow-box' + '-full'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 task execute(type:JavaExec) {
   if (project.hasProperty('mainClass')) {
     main = mainClass
@@ -41,8 +64,3 @@ task execute(type:JavaExec) {
   standardInput = System.in
   classpath = sourceSets.main.runtimeClasspath
 }
-
-compileJava {
-  options.compilerArgs << '-Xlint:unchecked'
-}
-
