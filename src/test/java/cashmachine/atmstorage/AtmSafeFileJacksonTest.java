@@ -60,7 +60,7 @@ public class AtmSafeFileJacksonTest {
     atmStorage.store(mp4);
     atmStorage.store(mpu1);
 
-    AtmSafeFileJackson jsonFile = new AtmSafeFileJackson("safe-test.json");
+    AtmSafe jsonFile = new AtmSafeFileJackson("safe-test.json");
     jsonFile.saveSafe(atmStorage.getMoneyStorage());
     File file = new File("safe-test.json");
 

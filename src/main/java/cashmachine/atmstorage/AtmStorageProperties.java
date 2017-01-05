@@ -33,9 +33,9 @@ public class AtmStorageProperties {
     properties.setProperty("objectFileName", "atm.ser");
     properties.setProperty("jsonFileName", "atm.json");
     properties.setProperty("xmlFileName", "atm.xml");
-    properties.setProperty("h2_db.uri", "h2");
-    properties.setProperty("h2_db.username", "su");
-    properties.setProperty("h2_db.password", "su");
+    properties.setProperty("h2_db.uri", "jdbc:h2:~/atmdb");
+    properties.setProperty("h2_db.username", "sa");
+    properties.setProperty("h2_db.password", "sa");
 
     try (FileOutputStream outputStream = new FileOutputStream(propFileName))  {
       properties.store(outputStream, commentText);

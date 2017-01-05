@@ -42,7 +42,7 @@ public class AtmSafeFileJacksonXML implements AtmSafe {
     try {
       xmlMapper.writeValue(new File(filename), wholeList);
     } catch (IOException exception) {
-      System.out.println("Error write to file: " + filename + " " + exception);
+      System.out.println("Error write to XML file: " + filename + " " + exception);
     }
   }
 
@@ -66,7 +66,7 @@ public class AtmSafeFileJacksonXML implements AtmSafe {
         wholeList = xmlMapper.readValue(safeStr, new TypeReference<ArrayList<MoneyPack>>() {});
       }
     } catch (IOException exception) {
-      System.out.println("Error read from file: " + filename + " " + exception);
+      System.out.println("Error read from XML file: " + filename + " " + exception);
     }
 
     for (MoneyPack mp : wholeList) {

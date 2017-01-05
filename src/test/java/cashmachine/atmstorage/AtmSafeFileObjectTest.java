@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,7 +44,7 @@ public class AtmSafeFileObjectTest {
 
   }
 
-/*
+
   @After
   public void destructor() throws Exception {
     File file = new File("safe-test.ser");
@@ -53,7 +52,7 @@ public class AtmSafeFileObjectTest {
       file.delete();
     }
   }
-*/
+
 
   @Test
   public void testAtmSafe_Object_File_Test1() throws Exception {

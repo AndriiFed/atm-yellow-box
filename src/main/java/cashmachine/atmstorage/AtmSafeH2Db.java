@@ -76,7 +76,7 @@ public class AtmSafeH2Db implements AtmSafe {
 
       ResultSet resultSet = conn.getMetaData().getTables(null, null, "ATM", null);
       if (!resultSet.next()) {
-        System.out.println("Table ATM does not exist.");
+        System.out.println("Table ATM does not exist. Creating.");
         saveSafe(moneyStorage.getMoneyStorage());
         return moneyStorage.getMoneyStorage();
       }
@@ -85,7 +85,7 @@ public class AtmSafeH2Db implements AtmSafe {
       ResultSet result;
       result = st.executeQuery(sqlStr);
       while (result.next()) {
-        int id = result.getInt("id");
+        //int id = result.getInt("id");
         String currency = result.getString("currency");
         int value = result.getInt("value");
         int amount = result.getInt("amount");

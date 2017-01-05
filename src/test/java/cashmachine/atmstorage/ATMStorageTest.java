@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Ignore;
 
 import java.io.File;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -39,8 +38,7 @@ public class ATMStorageTest {
     mpu4 = new MoneyPack("UAH", 10, 1);
     mpu5 = new MoneyPack("UAH", 1, 1);
 
-
-    atmStorage = new ATMStorage("test");
+    atmStorage = new ATMStorage("memory");
   }
 
   @After
@@ -125,7 +123,7 @@ public class ATMStorageTest {
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(2).getAmount(), is(3));
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(3).getAmount(), is(4));
 
-    List<MoneyPack> mplist = atmStorage.take(mpu1.getCurrency(), 674);
+    atmStorage.take(mpu1.getCurrency(), 674);
 
     assertThat(atmStorage.getAmount("UAH"), is(500 * 1 + 100 * 2 + 50 * 3 + 10 * 4 + 1 * 5 - 674));
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(0).getAmount(), is(1));
@@ -133,23 +131,23 @@ public class ATMStorageTest {
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(2).getAmount(), is(2));
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(3).getAmount(), is(1));
 
-    mplist = atmStorage.take("UAH", 220);
+    atmStorage.take("UAH", 220);
 
     assertThat(atmStorage.getAmount("UAH"), is(500 * 1 + 100 * 2 + 50 * 3 + 10 * 4 + 1 * 5 - 674 - 220));
     assertThat(atmStorage.getMoneyStorage().get("UAH").get(0).getAmount(), is(1));
 
-    mplist = atmStorage.take("UAH", 1);
+    atmStorage.take("UAH", 1);
 
     assertThat(atmStorage.getAmount("UAH"), is(500 * 1 + 100 * 2 + 50 * 3 + 10 * 4 + 1 * 5 - 674 - 220 - 1));
     assertThat(atmStorage.getMoneyStorage().containsKey("UAH"), is(false));
     assertThat(atmStorage.getMoneyStorage().containsKey("USD"), is(true));
 
-    mplist = atmStorage.take("USD", 7100);
+    atmStorage.take("USD", 7100);
 
     assertThat(atmStorage.getAmount("USD"), is(500 * 14 + 100 * 12 - 7100));
     assertThat(atmStorage.getMoneyStorage().containsKey("USD"), is(true));
 
-    mplist = atmStorage.take("USD", 1100);
+    atmStorage.take("USD", 1100);
 
     assertThat(atmStorage.getAmount("USD"), is(500 * 14 + 100 * 12 - 7100 - 1100));
     assertThat(atmStorage.getMoneyStorage().containsKey("USD"), is(false));

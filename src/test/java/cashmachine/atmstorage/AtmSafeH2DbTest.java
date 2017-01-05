@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,15 +35,20 @@ public class AtmSafeH2DbTest {
     atmStorage = new ATMStorage("test");
   }
 
-/*
+
   @After
   public void destructor() throws Exception {
-    File file = new File("safe-test.xml");
+    File file = new File("atmdb-test.mv.db");
+    File file2 = new File("atmdb-test.trace.db");
     if(file.exists()) {
       file.delete();
     }
+
+    if(file2.exists()) {
+      file2.delete();
+    }
   }
-*/
+
 
   @Test
   public void testAtmSafe_H2db_Test1() throws Exception {
@@ -57,11 +63,11 @@ public class AtmSafeH2DbTest {
     atmStorage.store(mpu5);
     atmStorage.store(mpu4);
 
-    AtmSafe atmSafe = new AtmSafeH2Db("jdbc:h2:~/atmdb-test");
+    AtmSafe atmSafe = new AtmSafeH2Db("jdbc:h2:./atmdb-test");
     atmSafe.saveSafe(atmStorage.getMoneyStorage());
 
     HashMap<String, ArrayList<MoneyPack>> safe = atmSafe.loadSafe();
-    System.out.println(safe);
+    //System.out.println(safe);
 
     // USD
     assertThat(safe.get("USD").get(0).getAmount(), is(14));

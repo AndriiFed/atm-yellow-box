@@ -3,7 +3,6 @@ package cashmachine.atmstorage;
 import cashmachine.money.MoneyPack;
 import cashmachine.money.MoneyPackSortByValueDesc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +44,6 @@ public class ATMStorage {
     }
     moneyStorage = atmSafe.loadSafe();
   }
-
 
   public void store(MoneyPack moneyPack) throws Exception {
 
