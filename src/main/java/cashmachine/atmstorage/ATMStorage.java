@@ -3,8 +3,8 @@ package cashmachine.atmstorage;
 import cashmachine.money.MoneyPack;
 import cashmachine.money.MoneyPackSortByValueDesc;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.Map;
 public class ATMStorage {
   private AtmSafe atmSafe = new AtmSafeFileObject();
   private HashMap<String, ArrayList<MoneyPack>> moneyStorage;
-  private AtmStorageProperties properties;
 
   public ATMStorage() throws Exception {
     this("");
@@ -21,7 +20,13 @@ public class ATMStorage {
 
   public ATMStorage(String environment) throws Exception {
 
-    properties = new AtmStorageProperties(environment);
+    if (environment.equals("memory")) {
+      atmSafe = new AtmSafeFileMemory();
+      moneyStorage = atmSafe.loadSafe();
+      return;
+    }
+
+    AtmStorageProperties properties = new AtmStorageProperties(environment);
 
     switch (properties.getProperty("storageType")) {
       case "object": atmSafe = new AtmSafeFileObject(properties.getProperty("objectFileName"));
@@ -30,35 +35,38 @@ public class ATMStorage {
         break;
       case "json": atmSafe = new AtmSafeFileJackson(properties.getProperty("jsonFileName"));
         break;
-      default: atmSafe = new AtmSafeFileObject();
+      case "h2db": atmSafe = new AtmSafeH2Db(properties.getProperty("h2_db.uri"));
+        break;
+      case "memory": atmSafe = new AtmSafeFileMemory();
+        break;
+      default: atmSafe = new AtmSafeFileMemory();
         break;
     }
     moneyStorage = atmSafe.loadSafe();
   }
 
-
-  public void store(MoneyPack moneyPack) throws IOException {
+  public void store(MoneyPack moneyPack) throws Exception {
 
     moneyPack = new MoneyPack(moneyPack.getCurrency(), moneyPack.getValue(), moneyPack.getAmount());
 
     if (moneyStorage.containsKey(moneyPack.getCurrency())) {
-      ArrayList<MoneyPack> mplist = moneyStorage.get(moneyPack.getCurrency());
+      ArrayList<MoneyPack> mpList = moneyStorage.get(moneyPack.getCurrency());
 
-      if (mplist.size() == 0) {
-        mplist.add(moneyPack);
+      if (mpList.size() == 0) {
+        mpList.add(moneyPack);
         return;
       }
 
       boolean findValue = false;
-      for (int i = 0; i < mplist.size(); i++) {
-        if (mplist.get(i).getValue() == moneyPack.getValue()) {
-          mplist.get(i).setAmount(mplist.get(i).getAmount() + moneyPack.getAmount());
+      for (int i = 0; i < mpList.size(); i++) {
+        if (mpList.get(i).getValue() == moneyPack.getValue()) {
+          mpList.get(i).setAmount(mpList.get(i).getAmount() + moneyPack.getAmount());
           findValue = true;
           break;
         }
       }
       if (!findValue) {
-        mplist.add(moneyPack);
+        mpList.add(moneyPack);
       }
 
       moneyStorage.get(moneyPack.getCurrency()).sort(new MoneyPackSortByValueDesc());
@@ -71,16 +79,16 @@ public class ATMStorage {
     atmSafe.saveSafe(moneyStorage);
   }
 
-  public List<MoneyPack> take(String currency, int money) throws IOException {
-
+  @SuppressWarnings("unchecked")
+  public List<MoneyPack> take(String currency, int money) throws Exception {
     ArrayList<MoneyPack> moneyList = new ArrayList<>();
 
     if (!moneyStorage.containsKey(currency)) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
 
     if (getAmount(currency) < money) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
 
     int summ = 0;
@@ -105,9 +113,9 @@ public class ATMStorage {
     if (summ == money) {
       takeFromStorage(moneyList);
       atmSafe.saveSafe(moneyStorage);
-      return moneyList;
+      return (List<MoneyPack>) moneyList.clone();
     }
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
 
   private void takeFromStorage(ArrayList<MoneyPack> moneyList) {
@@ -129,7 +137,6 @@ public class ATMStorage {
     Iterator<Map.Entry<String, ArrayList<MoneyPack>>> it = moneyStorage.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<String, ArrayList<MoneyPack>> entry = it.next();
-      String key = entry.getKey();
       ArrayList<MoneyPack> value = entry.getValue();
       if (value.isEmpty()) {
         it.remove();
@@ -139,8 +146,8 @@ public class ATMStorage {
 
   public List<MoneyPack> showContent() {
     ArrayList<MoneyPack> wholeList = new ArrayList<>();
-    for (ArrayList<MoneyPack> mplist : moneyStorage.values()) {
-      for (MoneyPack mp : mplist) {
+    for (ArrayList<MoneyPack> mpList : moneyStorage.values()) {
+      for (MoneyPack mp : mpList) {
         wholeList.add(mp);
       }
     }
@@ -163,12 +170,12 @@ public class ATMStorage {
     return summ;
   }
 
-  public void emptyStorage() throws IOException {
+  public void emptyStorage() throws Exception {
     moneyStorage.clear();
     atmSafe.saveSafe(moneyStorage);
   }
 
-  public void emptyStorage(String currency) throws IOException {
+  public void emptyStorage(String currency) throws Exception {
     if (moneyStorage.containsKey(currency)) {
       moneyStorage.remove(currency);
       atmSafe.saveSafe(moneyStorage);

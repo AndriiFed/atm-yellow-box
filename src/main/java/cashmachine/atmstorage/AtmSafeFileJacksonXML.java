@@ -29,34 +29,49 @@ public class AtmSafeFileJacksonXML implements AtmSafe {
 
   public void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) throws IOException {
     ObjectMapper xmlMapper = new XmlMapper();
+    xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    ArrayList<MoneyPack> wholeList = new ArrayList<>();
+    if (!safe.isEmpty()) {
+      for (ArrayList<MoneyPack> mpList : safe.values()) {
+        for (MoneyPack mp : mpList) {
+          wholeList.add(mp);
+        }
+      }
+    }
 
     try {
-      xmlMapper.writeValue(new File(filename), safe);
+      xmlMapper.writeValue(new File(filename), wholeList);
     } catch (IOException exception) {
-      System.out.println("Error write to file: " + filename + " " + exception);
+      System.out.println("Error write to XML file: " + filename + " " + exception);
     }
   }
 
-  public HashMap<String, ArrayList<MoneyPack>> loadSafe() throws IOException {
-    HashMap<String, ArrayList<MoneyPack>> moneyStorage = new HashMap<>();
+  public HashMap<String, ArrayList<MoneyPack>> loadSafe() throws Exception {
+    ATMStorage moneyStorage = new ATMStorage("memory");
+    moneyStorage.emptyStorage();
+    ArrayList<MoneyPack> wholeList = new ArrayList<>();
     String safeStr;
     XmlMapper xmlMapper = new XmlMapper();
     xmlMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
     File file = new File(filename);
     if (!file.exists()) {
-      saveSafe(moneyStorage);
-      return moneyStorage;
+      saveSafe(moneyStorage.getMoneyStorage());
+      return moneyStorage.getMoneyStorage();
     }
 
-    try (BufferedReader in = new BufferedReader(new FileReader(filename))) {
+    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
       safeStr = in.readLine();
       if (!safeStr.isEmpty()) {
-        moneyStorage = xmlMapper.readValue(safeStr, new TypeReference<HashMap<String, ArrayList<MoneyPack>>>() {});
+        wholeList = xmlMapper.readValue(safeStr, new TypeReference<ArrayList<MoneyPack>>() {});
       }
     } catch (IOException exception) {
-      System.out.println("Error read from file: " + filename + " " + exception);
+      System.out.println("Error read from XML file: " + filename + " " + exception);
     }
-    return moneyStorage;
+
+    for (MoneyPack mp : wholeList) {
+      moneyStorage.store(mp);
+    }
+    return moneyStorage.getMoneyStorage();
   }
 }

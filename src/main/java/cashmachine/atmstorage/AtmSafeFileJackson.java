@@ -34,7 +34,7 @@ public class AtmSafeFileJackson implements AtmSafe {
     try (PrintWriter out = new PrintWriter(filename)) {
       out.println(safeStr);
     } catch (IOException exception) {
-      System.out.println("Error open file: " + filename + " " + exception);
+      System.out.println("Error write file: " + filename + " " + exception);
     }
   }
 
@@ -57,7 +57,7 @@ public class AtmSafeFileJackson implements AtmSafe {
         moneyStorage = objectMapper.readValue(safeStr, new TypeReference<HashMap<String, ArrayList<MoneyPack>>>() {});
       }
     } catch (IOException exception) {
-      System.out.println("Error open file: " + filename + " " + exception);
+      System.out.println("Error read file: " + filename + " " + exception);
     }
     return moneyStorage;
   }
