@@ -31,6 +31,7 @@ public abstract class Atm {
       try {
         command = atmInterface.receiveCommand(this);
         command.execute();
+        atmInterface.showSuccess();
       } catch (BadCommandException exception) {
         atmInterface.showError(exception.getMessage());
       } catch (Exception exception) {
@@ -57,4 +58,9 @@ public abstract class Atm {
   public void exit() throws Exception {
     workingState = false;
   }
+
+  public void help() throws Exception {
+    atmInterface.showHelp();
+  }
+
 }

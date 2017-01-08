@@ -29,7 +29,10 @@ public abstract class AtmCommand {
       case "?":
         return new PrintCashCommand(atm);
       case "exit":
+      case "q":
         return new ExitCommand(atm);
+      case "help":
+        return new HelpCommand(atm);
       default:
         throw new BadCommandException();
     }
@@ -38,10 +41,6 @@ public abstract class AtmCommand {
 
   private static boolean validateCommand(String[] args) {
     if (args.length == 0) {
-      return false;
-    }
-
-    if (!args[0].contains("+") && !args[0].contains("-") && !args[0].contains("?") && !args[0].contains("exit")) {
       return false;
     }
 
@@ -67,14 +66,10 @@ public abstract class AtmCommand {
             return false;
           }
           break;
-        case "?":
-        case "exit":
+        default:
           if (args.length != 1) {
             return false;
           }
-          break;
-        default:
-          return false;
       }
     } catch (NumberFormatException exception) {
       return false;
