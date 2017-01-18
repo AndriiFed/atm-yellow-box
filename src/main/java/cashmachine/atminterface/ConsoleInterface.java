@@ -7,8 +7,10 @@ import cashmachine.money.MoneyPack;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.util.List;
@@ -33,7 +35,13 @@ public class ConsoleInterface extends AtmInterface {
   @Override
   public void showHelp() throws IOException {
     try {
-      BufferedReader reader = new BufferedReader(new FileReader("help.txt"));
+      InputStream helpStream = getClass().getResourceAsStream("/help.txt");
+
+      if (helpStream == null) {
+        throw new FileNotFoundException("help information is not available");
+      }
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(helpStream));
 
       String line;
       while (true) {
@@ -45,7 +53,7 @@ public class ConsoleInterface extends AtmInterface {
       }
 
     } catch (FileNotFoundException exception) {
-      showError("help information is not available");
+      showMessage(exception.getMessage());
     }
 
   }
