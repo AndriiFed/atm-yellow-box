@@ -27,6 +27,12 @@ public class AtmSafeH2Db implements AtmSafe {
 
   public void saveSafe(HashMap<String, ArrayList<MoneyPack>> safe) throws Exception {
     ArrayList<MoneyPack> wholeList = new ArrayList<>();
+    Class.forName("org.h2.Driver");
+    Connection conn = DriverManager.getConnection(dbName, dbUser, dbPassword);
+    Statement st = null;
+    ResultSet resultSet = null;
+    String sqlStr;
+
     if (!safe.isEmpty()) {
       for (ArrayList<MoneyPack> mpList : safe.values()) {
         for (MoneyPack mp : mpList) {
@@ -38,13 +44,14 @@ public class AtmSafeH2Db implements AtmSafe {
     }
 
     try {
-      Class.forName("org.h2.Driver");
-      Connection conn = DriverManager.getConnection(dbName, dbUser, dbPassword);
-      Statement st;
       st = conn.createStatement();
+      resultSet = conn.getMetaData().getTables(null, null, "ATM", null);
 
-      String sqlStr = "DROP TABLE IF EXISTS atm;";
-      st.execute(sqlStr);
+      if (resultSet.next()) {
+        //System.out.println("Table ATM found! Deleting old records.");
+        sqlStr =  "DELETE FROM atm;";
+        st.execute(sqlStr);
+      }
 
       sqlStr = "CREATE TABLE IF NOT EXISTS atm(id BIGINT PRIMARY KEY AUTO_INCREMENT, "
         + "currency CHAR(3) NOT NULL, value BIGINT NOT NULL, amount BIGINT NOT NULL);";
@@ -55,11 +62,18 @@ public class AtmSafeH2Db implements AtmSafe {
           moneyPack.getCurrency(), moneyPack.getValue(), moneyPack.getAmount());
         st.execute(sqlStr);
       }
-
-      st.close();
-      conn.close();
     } catch (SQLException sqlException) {
       System.out.println("SQL Error: " + sqlException);
+    } finally {
+      if (resultSet != null) {
+        resultSet.close();
+      }
+      if (st != null) {
+        st.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
     }
 
   }
@@ -67,36 +81,44 @@ public class AtmSafeH2Db implements AtmSafe {
   public HashMap<String, ArrayList<MoneyPack>> loadSafe() throws Exception {
     ATMStorage moneyStorage = new ATMStorage("memory");
     moneyStorage.emptyStorage();
+    Class.forName("org.h2.Driver");
+    Connection conn = DriverManager.getConnection(dbName, dbUser, dbPassword);
+    Statement st = null;
+    ResultSet resultSet = null;
+    String sqlStr;
 
     try {
-      Class.forName("org.h2.Driver");
-      Connection conn = DriverManager.getConnection(dbName, dbUser, dbPassword);
-      Statement st;
       st = conn.createStatement();
+      resultSet = conn.getMetaData().getTables(null, null, "ATM", null);
 
-      ResultSet resultSet = conn.getMetaData().getTables(null, null, "ATM", null);
       if (!resultSet.next()) {
-        System.out.println("Table ATM does not exist. Creating.");
+        //System.out.println("Table ATM does not exist. Creating.");
         saveSafe(moneyStorage.getMoneyStorage());
         return moneyStorage.getMoneyStorage();
       }
 
-      String sqlStr = "SELECT * FROM atm";
-      ResultSet result;
-      result = st.executeQuery(sqlStr);
-      while (result.next()) {
-        //int id = result.getInt("id");
-        String currency = result.getString("currency");
-        int value = result.getInt("value");
-        int amount = result.getInt("amount");
+      sqlStr = "SELECT * FROM atm";
+      resultSet = st.executeQuery(sqlStr);
+      while (resultSet.next()) {
+        //int id = resultSet.getInt("id");
+        String currency = resultSet.getString("currency");
+        int value = resultSet.getInt("value");
+        int amount = resultSet.getInt("amount");
         //System.out.println(id + " " + currency + " " + value + " " + amount);
         moneyStorage.store(new MoneyPack(currency, value, amount));
       }
-      result.close();
-      st.close();
-      conn.close();
     } catch (SQLException sqlException) {
       System.out.println("SQL Error: " + sqlException);
+    } finally {
+      if (resultSet != null) {
+        resultSet.close();
+      }
+      if (st != null) {
+        st.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
     }
     return moneyStorage.getMoneyStorage();
   }
