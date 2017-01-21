@@ -75,7 +75,6 @@ public class AtmSafeH2Db implements AtmSafe {
         conn.close();
       }
     }
-
   }
 
   public HashMap<String, ArrayList<MoneyPack>> loadSafe() throws Exception {

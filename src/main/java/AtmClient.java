@@ -62,7 +62,6 @@ public class AtmClient {
     }
   }
 
-
   static class SendThread implements Runnable {
     private Socket socket = null;
 
