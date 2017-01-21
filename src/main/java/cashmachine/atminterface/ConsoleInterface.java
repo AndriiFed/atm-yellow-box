@@ -6,12 +6,14 @@ import cashmachine.exceptions.BadCommandException;
 import cashmachine.money.MoneyPack;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.util.List;
 
 public class ConsoleInterface extends AtmInterface {
-  public static final String okMessage = "OK";
   public static final String errorMessage = "ERROR";
 
   public void showMessage(String message) {
@@ -20,7 +22,38 @@ public class ConsoleInterface extends AtmInterface {
 
   @Override
   public void showGreeting() {
-    System.out.println("HELLO");
+    System.out.println("Welcome to Cash machine");
+  }
+
+  @Override
+  public void showSuccess() {
+    System.out.println("OK");
+  }
+
+  @Override
+  public void showHelp() throws IOException {
+    try {
+      InputStream helpStream = getClass().getResourceAsStream("/help.txt");
+
+      if (helpStream == null) {
+        throw new FileNotFoundException("help information is not available");
+      }
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(helpStream));
+
+      String line;
+      while (true) {
+        line = reader.readLine();
+        if (line == null) {
+          break;
+        }
+        System.out.println(line);
+      }
+
+    } catch (FileNotFoundException exception) {
+      showMessage(exception.getMessage());
+    }
+
   }
 
   @Override
@@ -54,9 +87,16 @@ public class ConsoleInterface extends AtmInterface {
   }
 
   public AtmCommand receiveCommand(Atm atm) throws IOException, BadCommandException {
-    System.out.print("> ");
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    String[] input = reader.readLine().split("\\s+");
+    String line;
+    while (true) {
+      System.out.print("> ");
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+      line = reader.readLine();
+      if ( ! line.isEmpty() ) {
+        break;
+      }
+    }
+    String[] input = line.split("\\s+");
 
     return AtmCommand.createCommand(atm, input);
   }

@@ -35,7 +35,6 @@ public class AtmSafeH2DbTest {
     atmStorage = new ATMStorage("test");
   }
 
-
   @After
   public void destructor() throws Exception {
     File file = new File("atmdb-test.mv.db");
@@ -48,7 +47,6 @@ public class AtmSafeH2DbTest {
       file2.delete();
     }
   }
-
 
   @Test
   public void testAtmSafe_H2db_Test1() throws Exception {
