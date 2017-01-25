@@ -20,12 +20,10 @@ public class ConsoleInterface extends AtmInterface {
     System.out.println(message);
   }
 
-  @Override
   public void showGreeting() {
     System.out.println("Welcome to Cash machine");
   }
 
-  @Override
   public void showSuccess() {
     System.out.println("OK");
   }
@@ -57,11 +55,6 @@ public class ConsoleInterface extends AtmInterface {
   }
 
   @Override
-  public void showError() {
-    System.out.println(errorMessage);
-  }
-
-  @Override
   public void showError(String errorText) {
     System.out.println(errorMessage + ": " + errorText);
   }
@@ -86,7 +79,7 @@ public class ConsoleInterface extends AtmInterface {
     }
   }
 
-  public AtmCommand receiveCommand(Atm atm) throws IOException, BadCommandException {
+  public AtmCommand receiveCommand() throws IOException, BadCommandException {
     String line;
     while (true) {
       System.out.print("> ");
@@ -99,5 +92,25 @@ public class ConsoleInterface extends AtmInterface {
     String[] input = line.split("\\s+");
 
     return AtmCommand.createCommand(atm, input);
+  }
+
+  public void start(Atm atm) throws Exception {
+    this.atm = atm;
+    workingState = true;
+    showGreeting();
+    while (workingState) {
+      try {
+        AtmCommand command = receiveCommand();
+        command.execute();
+        showSuccess();
+      } catch (BadCommandException | IOException exception) {
+        showError(exception.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void stop() {
+    workingState = false;
   }
 }
