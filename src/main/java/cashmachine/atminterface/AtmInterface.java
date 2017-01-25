@@ -8,19 +8,16 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class AtmInterface {
-  public abstract void showMessage(String message);
+  protected Atm atm;
+  protected boolean workingState;
 
-  public abstract void showGreeting();
+  public abstract void start(Atm atm) throws Exception;
 
-  public abstract void showSuccess();
+  public abstract void stop();
 
   public abstract void showHelp() throws IOException;
 
-  public abstract void showError();
-
   public abstract void showError(String errorText);
-
-  public abstract AtmCommand receiveCommand(Atm atm) throws Exception;
 
   public abstract void showBalance(List<MoneyPack> money);
 

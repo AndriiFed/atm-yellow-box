@@ -16,28 +16,17 @@ import java.util.List;
 public abstract class Atm {
   AtmInterface atmInterface;
   ATMStorage atmStorage;
-  AtmCommand command;
-  private boolean workingState;
 
   public Atm(AtmInterface atmInterface, ATMStorage atmStorage) {
     this.atmInterface = atmInterface;
     this.atmStorage = atmStorage;
-    workingState = true;
   }
 
   public void start() {
-    atmInterface.showGreeting();
-    while (workingState) {
-      try {
-        command = atmInterface.receiveCommand(this);
-        command.execute();
-        atmInterface.showSuccess();
-      } catch (BadCommandException exception) {
-        atmInterface.showError(exception.getMessage());
-      } catch (Exception exception) {
-        atmInterface.showError();
-      }
-      command = null;
+    try {
+      atmInterface.start(this);
+    } catch (Exception exception) {
+      atmInterface.showError(exception.getMessage());
     }
   }
 
@@ -56,7 +45,7 @@ public abstract class Atm {
   }
 
   public void exit() throws Exception {
-    workingState = false;
+    atmInterface.stop();
   }
 
   public void help() throws Exception {
