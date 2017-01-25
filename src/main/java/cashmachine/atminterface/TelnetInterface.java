@@ -31,7 +31,6 @@ public class TelnetInterface extends AtmInterface {
       InputStream in = connection.getInputStream();
       Writer writer = new OutputStreamWriter(out);
       writer.write("Welcome to Cash machine\n");
-      writer.flush();
       while (true) {
         writer.write(">");
         writer.flush();
@@ -48,13 +47,11 @@ public class TelnetInterface extends AtmInterface {
               output = "";
             }
           }
-          writer.write("OK");
-          writer.flush();
         } catch (BadCommandException exception) {
           writer.write(exception.getMessage() + "\n");
           writer.flush();
         } catch (Exception exception) {
-          exception.printStackTrace();
+          System.out.println(exception.getMessage());
           writer.write(exception.getMessage() + "\n");
           writer.flush();
         }
@@ -62,7 +59,7 @@ public class TelnetInterface extends AtmInterface {
       }
       connection.close();
     } catch (IOException exception) {
-      exception.printStackTrace();
+      System.out.println(exception.getMessage());
     }
   };
 
@@ -78,7 +75,7 @@ public class TelnetInterface extends AtmInterface {
       }
       connectionField.close();
     } catch (IOException exception) {
-      exception.printStackTrace();
+      System.out.println(exception.getMessage());
     }
 
 
