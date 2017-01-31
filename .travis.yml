@@ -2,12 +2,17 @@ language: java
 sudo: false
 jdk:
   - oraclejdk8
-
+  
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+  
 script: ./gradlew check
 
 before_install:
  - chmod +x gradlew
-
+ 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
